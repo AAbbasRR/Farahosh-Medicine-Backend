@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "rest_framework",
     # installed apps
     "app_user",
+    "app_medicine",
 ]
 
 MIDDLEWARE = [

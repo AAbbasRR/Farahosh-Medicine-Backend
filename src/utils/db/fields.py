@@ -1,11 +1,5 @@
 from django.db import models
-from django.conf import settings
 from django.core import validators
-
-from utils.exceptions.core import InvalidValueError
-
-from decimal import Decimal
-import hashlib
 
 
 class CustomFileField(models.FileField):
@@ -29,7 +23,7 @@ class PriceField(models.PositiveIntegerField):
         super().__init__(*args, **kwargs)
 
 
-class PercentField(models.PositiveIntegerField):
+class PercentField(models.FloatField):
     def __init__(self, *args, **kwargs):
         kwargs["default"] = 0
         kwargs["validators"] = [

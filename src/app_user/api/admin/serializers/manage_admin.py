@@ -32,6 +32,8 @@ class AdminListAddUpdateAdminSerializer(CustomModelSerializer):
             "last_name",
             "username",
             "mobile_number",
+            "is_staff",
+            "is_superuser",
             "formatted_last_login",
             "formatted_date_joined",
         )

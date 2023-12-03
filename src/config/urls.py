@@ -11,12 +11,20 @@ v1_user_urlpatterns = [
         "auth/",
         include("app_user.api.user.urls", namespace="app_user_user"),
     ),
+    path(
+        "medicine/",
+        include("app_medicine.api.user.urls", namespace="app_medicine_user"),
+    ),
 ]
 
 v1_admin_urlpatterns = [
     path(
         "user/",
         include("app_user.api.admin.urls", namespace="app_user_admin"),
+    ),
+    path(
+        "medicine/",
+        include("app_medicine.api.admin.urls", namespace="app_medicine_admin"),
     ),
 ]
 

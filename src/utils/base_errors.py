@@ -18,6 +18,7 @@ class BaseErrors:
     server_error = _("Server Error.")
 
     # public sign up, login, forget pass, change pass
+    old_password_is_incorrect = _("Old Password Is Incorrect")
     invalid_mobile_number_format = _("Invalid Mobile Number Format")
     invalid_email_format = _("Invalid Email Format")
     invalid_mobile_number_or_email_format = _("Invalid Mobile Number Or Email Format")

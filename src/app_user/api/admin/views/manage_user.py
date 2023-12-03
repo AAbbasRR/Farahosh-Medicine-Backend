@@ -14,12 +14,12 @@ class AdminListCreateUserAPIView(generics.CustomListCreateAPIView):
     pagination_class = BasePagination
     serializer_class = AdminListAddUpdateUserSerializer
     search_fields = ["mobile_number", "first_name", "last_name"]
-    queryset = UserModel.objects.all(is_staff=False, is_superuser=False)
+    queryset = UserModel.objects.filter(is_staff=False, is_superuser=False)
 
 
 class AdminUpdateDeleteUserAPIView(generics.CustomUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedPermission, IsAdminUserPermission]
     versioning_class = BaseVersioning
     serializer_class = AdminListAddUpdateUserSerializer
-    queryset = UserModel.objects.all(is_staff=False, is_superuser=False)
+    queryset = UserModel.objects.filter(is_staff=False, is_superuser=False)
     object_name = "User"

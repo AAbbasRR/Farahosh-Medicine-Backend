@@ -7,13 +7,15 @@ from .views import *
 app_name = "app_user_admin"
 urlpatterns = [
     # login
-    path("login/", AdminLoginAPIView.as_view(), name="login"),
-    path("login/refresh/", TokenRefreshView.as_view(), name="login_token_refresh"),
+    path("auth/login/", AdminLoginAPIView.as_view(), name="login"),
+    path("auth/login/refresh/", TokenRefreshView.as_view(), name="login_token_refresh"),
     # info
-    path("info/", AdminInfoAPIView.as_view(), name="info_account"),
+    path("auth/info/", AdminInfoAPIView.as_view(), name="info_account"),
     # change password
     path(
-        "change_password/", AdminChangePasswordAPIView.as_view(), name="change_password"
+        "auth/change_password/",
+        AdminChangePasswordAPIView.as_view(),
+        name="change_password",
     ),
     # manage normal users
     path(

@@ -14,6 +14,20 @@ class InvalidUsernameOrPasswordException(APIException):
     default_detail = BaseErrors.invalid_username_or_password
 
 
+class UserNotAdminException(APIException):
+    status_code = 400
+    default_code = BaseErrors.user_is_not_admin
+
+
+class OldPasswordIsIncorrectException(APIException):
+    status_code = 400
+
+    def __init__(
+        self, detail=BaseErrors.old_password_is_incorrect, field_name="old_password"
+    ):
+        super().__init__(detail={field_name: detail})
+
+
 class NotFoundObjectException(APIException):
     status_code = 404
 

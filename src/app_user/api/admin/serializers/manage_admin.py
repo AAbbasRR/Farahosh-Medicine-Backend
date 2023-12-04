@@ -52,7 +52,7 @@ class AdminListAddUpdateAdminSerializer(CustomModelSerializer):
             ]
 
     def create(self, validated_data):
-        return UserModel.objects.create_superuser(**validated_data)
+        return UserModel.objects.register_user(**validated_data)
 
     def update(self, instance, validated_data):
         with transaction.atomic():

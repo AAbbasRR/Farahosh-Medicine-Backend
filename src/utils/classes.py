@@ -100,7 +100,7 @@ class Redis:
 class ManageSMSPortal:
     def __init__(self, user_mobile, user_type=""):
         self.user_mobile = user_mobile
-        self.user_redis_key = f"{user_type}_{user_mobile}"
+        self.user_redis_key = user_mobile
         self.title_types = {
             "register": "کد تایید حساب کاربری شما",
             "login": "کد ورود به حساب شما",

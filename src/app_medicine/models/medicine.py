@@ -22,9 +22,7 @@ class Medicine(AbstractDateModel):
         POWDER_FOR_INJ = "POWDER_FOR_INJ", _("POWDER_FOR_INJ")
         INJ_POWDER = "INJ_POWDER", _("INJ_POWDER")
 
-    brand_code = models.CharField(
-        max_length=5, unique=True, verbose_name=_("Brand Code")
-    )
+    brand_code = models.CharField(max_length=5, verbose_name=_("Brand Code"))
     title = models.CharField(max_length=124, verbose_name=_("Title"))
     term = models.TextField(null=True, blank=True, verbose_name=_("Term"))
     shape = models.CharField(

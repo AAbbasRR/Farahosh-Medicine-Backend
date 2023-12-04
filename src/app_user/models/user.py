@@ -1,10 +1,9 @@
-import django.db.utils
 from django.contrib.auth.models import (
     AbstractUser,
     BaseUserManager,
     update_last_login,
 )
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import gettext as _
 from django.core.management import settings
 
@@ -20,11 +19,12 @@ from utils.data_list import RedisKeys
 from utils.exceptions.core import (
     ObjectNotFoundError,
     RedisKeyNotExistsError,
+    InvalidUsernameOrPasswordError,
 )
 
 
 class UserMobileNumberManager(models.Manager):
-    def find_by_mobile_number(self, mobile_number, *args, **kwargs):
+    def find_by_mobile_number(self, mobile_number, **kwargs):
         try:
             return self.get(mobile_number=mobile_number, **kwargs)
         except self.model.DoesNotExist:
@@ -32,40 +32,48 @@ class UserMobileNumberManager(models.Manager):
 
 
 class UserManager(BaseUserManager, UserMobileNumberManager):
-    def create_user(self, *args, **kwargs):
-        pass
-        # try:
-        #     user = self.model(**kwargs)
-        #     user.save(using=self._db)
-        #     user.create_username()
-        #     password = kwargs.pop("password", create_password_random())
-        #     user.set_password(password)
-        #     user.save()
-        #     return user
-        # except django.db.utils.IntegrityError:
-        #     mobile_number = kwargs.get("mobile_number", None)
-        #     email = kwargs.get("email", None)
-        #     if mobile_number:
-        #         try:
-        #             user_with_mobile_number = self.find_by_mobile_number(mobile_number)
-        #             if user_with_mobile_number.is_active is True:
-        #                 if user_with_mobile_number.mobile_number_is_verified is False:
-        #                     user_with_mobile_number.empty_mobile_number()
-        #             else:
-        #                 user_with_mobile_number.delete()
-        #         except ObjectNotFoundError:
-        #             pass
-        #     if email:
-        #         try:
-        #             user_with_email = self.find_by_email(email)
-        #             if user_with_email.is_active is True:
-        #                 if user_with_email.email_is_verified is False:
-        #                     user_with_email.empty_email()
-        #             else:
-        #                 user_with_email.delete()
-        #         except ObjectNotFoundError:
-        #             pass
-        #     return self.create_user(*args, **kwargs)
+    def authenticate_user(self, username, password, **kwargs):
+        try:
+            user_obj = self.get(username=username, **kwargs)
+            if user_obj.check_password(password):
+                return user_obj
+            else:
+                raise InvalidUsernameOrPasswordError()
+        except self.model.DoesNotExist:
+            raise InvalidUsernameOrPasswordError()
+
+    def create_user(self, username, password=None, **kwargs):
+        user = self.model(username=username, **kwargs)
+        user.set_password(password)
+        user.is_active = True
+        user.save(using=self._db)
+        return user
+
+    def create_staffuser(self, username, password):
+        user = self.model(
+            email=username,
+        )
+        user.set_password(password)
+        user.is_staff = True
+        user.is_active = True
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, password):
+        user = self.model(
+            username=username,
+        )
+        user.set_password(password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.is_active = True
+        user.save(using=self._db)
+        return user
+
+    def register_user(self, username, password=None, **kwargs):
+        with transaction.atomic():
+            user = self.create_user(username, password, **kwargs)
+        return user
 
 
 class UserMobileNumber(models.Model):
@@ -150,9 +158,6 @@ class UserMobileNumber(models.Model):
             case True:
                 redis_lock_wrong_try_cache_service.delete()
                 redis_user_otp_code_cache_service.delete()
-                if not getattr(self, f"{field_verify}_is_verified"):
-                    setattr(self, f"{field_verify}_is_verified", True)
-                    self.save()
             case False:
                 if lock_user_when_wrong_code is True:
                     try:
@@ -186,10 +191,8 @@ class UserMobileNumber(models.Model):
 
 
 class User(AbstractUser, UserMobileNumber):
-    username = None
     email = None
 
-    USERNAME_FIELD = "mobile_number"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
@@ -206,14 +209,6 @@ class User(AbstractUser, UserMobileNumber):
         return self.date_joined.strftime(
             f"{settings.DATE_INPUT_FORMATS} {settings.TIME_INPUT_FORMATS}"
         )
-
-    def activate(self):
-        """
-        :return: active public account after email account validate
-        """
-        self.is_active = True
-        self.save()
-        return self
 
     def set_last_login(self):
         """
@@ -252,8 +247,3 @@ class User(AbstractUser, UserMobileNumber):
             }
         )
         return user_info
-
-    def create_username(self, user_type="public"):
-        username = f"{user_type}_{self.id}"
-        self.username = username
-        return username

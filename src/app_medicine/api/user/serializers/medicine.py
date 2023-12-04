@@ -9,8 +9,10 @@ class UserListMedicineSerializer(CustomModelSerializer):
         fields = (
             "id",
             "brand_code",
+            "title",
+            "shape",
+            "dose",
             "price_exchange_subsidy",
-            "get_full_name",
         )
 
 
@@ -27,5 +29,4 @@ class UserDetailMedicineSerializer(CustomModelSerializer):
             "price_exchange_subsidy",
             "percent_share_of_organization_exchange_subsidy",
             "price_of_percent_organization",
-            "get_full_name",
         )

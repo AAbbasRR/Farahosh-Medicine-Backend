@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     # 3rd party apps
     "corsheaders",
     "rest_framework",
+    "django_filters",
     # installed apps
     "app_user",
     "app_medicine",
@@ -138,6 +139,11 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ],
 }
 
 # __django rest framework simplejwt setting__ #

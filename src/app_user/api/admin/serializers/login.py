@@ -12,6 +12,7 @@ class AdminLoginSerializer(CustomModelSerializer):
     class Meta:
         model = UserModel
         fields = ("username", "password")
+        extra_kwargs = {"username": {"validators": []}}
 
     def validate(self, attrs):
         try:

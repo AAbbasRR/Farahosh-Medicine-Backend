@@ -1,5 +1,3 @@
-from django.db import transaction
-
 from rest_framework import serializers
 
 from app_user.models import UserModel
@@ -11,7 +9,6 @@ from utils.db.validators import PhoneNumberRegexValidator, UniqueValidator
 class AdminListAddUpdateUserSerializer(CustomModelSerializer):
     mobile_number = serializers.CharField(
         required=True,
-        source="mobile_number",
         validators=[
             PhoneNumberRegexValidator,
             UniqueValidator(UserModel.objects.all()),
@@ -29,21 +26,13 @@ class AdminListAddUpdateUserSerializer(CustomModelSerializer):
             "formatted_date_joined",
         )
 
-    def serializer_after_access_to_method_and_user(self):
-        if self.method == "PUT":
-            self.fields["mobile_number"].validators = [
-                [
-                    PhoneNumberRegexValidator,
-                    UniqueValidator(UserModel.objects.exclude(id=self.user.id)),
-                ]
-            ]
-
     def create(self, validated_data):
-        return UserModel.objects.register_user(**validated_data)
+        return UserModel.objects.register_user(
+            validated_data["mobile_number"], **validated_data
+        )
 
     def update(self, instance, validated_data):
-        with transaction.atomic():
-            for field_name in validated_data:
-                setattr(instance, field_name, validated_data[field_name])
-            instance.save()
+        for field_name in validated_data:
+            setattr(instance, field_name, validated_data[field_name])
+        instance.save()
         return instance

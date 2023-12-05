@@ -201,6 +201,8 @@ class User(AbstractUser, UserMobileNumber):
         return f"{self.pk} {self.mobile_number}"
 
     def formatted_last_login(self):
+        if self.last_login is None:
+            return None
         return self.last_login.strftime(
             f"{settings.DATE_INPUT_FORMATS} {settings.TIME_INPUT_FORMATS}"
         )

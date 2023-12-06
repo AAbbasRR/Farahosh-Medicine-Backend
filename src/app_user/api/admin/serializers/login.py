@@ -17,7 +17,7 @@ class AdminLoginSerializer(CustomModelSerializer):
     def validate(self, attrs):
         try:
             user_obj = UserModel.objects.authenticate_user(**attrs)
-            if False in [user_obj.is_staff, user_obj.is_superuser]:
+            if user_obj.is_staff is False and user_obj.is_superuser is False:
                 raise UserNotAdminException()
             user_obj.set_last_login()
             return user_obj.user_login_detail()

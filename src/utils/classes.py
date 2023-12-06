@@ -136,7 +136,7 @@ class ManageSMSPortal:
             "UserName": settings.SMS_PORTAL["username"],
             "Password": settings.SMS_PORTAL["pass"],
             "Mobile": self.user_mobile,
-            "Message": f"بیولایف، {self.title_types[title_type]} {otp_code} میباشد.",
+            "Message": f"فراهوش، {self.title_types[title_type]} {otp_code} میباشد.",
         }
         if settings.DEPENDENT_SMS_ON_DEBUG is True and settings.DEBUG is True:
             print(data)

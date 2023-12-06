@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from app_user.api.admin.serializers.manage_admin import (
     AdminListAddUpdateAdminSerializer,
 )
@@ -24,7 +26,11 @@ class AdminListCreateAdminAPIView(generics.CustomListCreateAPIView):
     pagination_class = BasePagination
     serializer_class = AdminListAddUpdateAdminSerializer
     search_fields = ["username", "mobile_number", "first_name", "last_name"]
-    queryset = UserModel.objects.filter(is_staff=True, is_superuser=True)
+
+    def get_queryset(self):
+        return UserModel.objects.filter(
+            Q(is_staff=True) | Q(is_superuser=True)
+        ).exclude(id=self.request.user.id)
 
 
 class AdminUpdateDeleteAdminAPIView(generics.CustomUpdateDestroyAPIView):
@@ -35,5 +41,9 @@ class AdminUpdateDeleteAdminAPIView(generics.CustomUpdateDestroyAPIView):
     ]
     versioning_class = BaseVersioning
     serializer_class = AdminListAddUpdateAdminSerializer
-    queryset = UserModel.objects.filter(is_staff=True, is_superuser=True)
     object_name = "Admin"
+
+    def get_queryset(self):
+        return UserModel.objects.filter(
+            Q(is_staff=True) | Q(is_superuser=True)
+        ).exclude(id=self.request.user.id)

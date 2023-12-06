@@ -239,6 +239,8 @@ class User(AbstractUser, UserMobileNumber):
             "date_joined": self.formatted_date_joined(),
             "last_login": self.formatted_last_login(),
             "full_name": self.get_full_name(),
+            "is_staff": self.is_staff,
+            "is_superuser": self.is_superuser,
         }
 
     def user_login_detail(self):

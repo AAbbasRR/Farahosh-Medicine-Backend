@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  back:
+    image: backend:1.0
+    container_name: back_django
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    restart: always
+    networks:
+      - back-network
+    volumes:
+      - ./src:/app
+    depends_on:
+      - db
+      - redis
+
+  back_nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8080:80"
+    restart: always
+    networks:
+      - back-network
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/back.conf:ro
+    depends_on:
+      - back
+
+  db:
+    image: postgres:latest
+    container_name: back_postgres
+    env_file: .env.db
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - back-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    container_name: back_redis
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - back-network
+
+volumes:
+  postgres_data:
+
+networks:
+  back-network:
+    driver: bridge

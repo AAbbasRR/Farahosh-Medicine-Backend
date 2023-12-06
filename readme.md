@@ -1,4 +1,4 @@
-## Single level Backend :rocket:
+## Farahosh Medicines Backend :rocket:
 
 env variables:
 
@@ -13,15 +13,6 @@ env variables:
     REDIS_HOST = url[default=localhost]
     REDIS_PORT = int[default=6379]
     REDIS_DB = int[default=0]
-
-    # ___Email Setup___ # if your DEBUG bariable is False, neded to set below variables
-    EMAIL_HOST = email[sender host mail] *
-    EMAIL_HOST_USER = email[sender email] *
-    EMAIL_HOST_PASSWORD = string *
-    EMAIL_PORT = int *
-    EMAIL_USE_SSL = boolean *
-    EMAIL_USE_TLS = boolean *
-    DEFAULT_FROM_EMAIL = string *
 
     # ___Database___ #
     USE_MYSQL = boolean[default=False]
@@ -41,9 +32,6 @@ env variables:
 
     DEFAULT_DATABASE_NAME = str[set mysql or postgresql]
 
-    # __online payment gateway__ #
-    ZARINPAL_PORTAL_ID = string *
-
     # __sms portal[raygansms]__ #
     SMS_PORTAL_USERNAME = string *
     SMS_PORTAL_PASS = string *
@@ -56,10 +44,6 @@ docker env variables:
         POSTGRES_USER = string *
         POSTGRES_PASSWORD = string *
         POSTGRES_DB = string
-    # mail server #
-        ENABLE_RSPAMD = bool *
-        ENABLE_CLAMAV = bool *
-        ENABLE_FAIL2BAN = bool *
 
 :question:
 
@@ -77,6 +61,11 @@ How To Run Locally :question:
     python manage.py makemigrations
     python manage.py migrate
     python manage.py runserver or gunicorn src.config.wsgi:application --bind 0.0.0.0:8000
+
+
+    for create default medecines from csv file:
+        in src directory, run below command:
+            python manage.py createmedicines
 
     for install redis:
         linux - ubuntu

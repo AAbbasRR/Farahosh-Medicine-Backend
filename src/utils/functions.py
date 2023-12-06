@@ -1,5 +1,4 @@
 import random
-import calendar
 
 
 def create_otp_code(length=5):  # create a random digit number
@@ -14,8 +13,3 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
-
-
-def get_days_in_month(year, month):
-    _, days_in_month = calendar.monthrange(year, month)
-    return days_in_month

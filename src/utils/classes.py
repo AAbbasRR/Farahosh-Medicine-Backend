@@ -21,8 +21,6 @@ class Redis:
     )  # config redis system cache
     expire_times = {
         "otp_code": 300,  # 5Min
-        "forget_password": 900,  # 15Min
-        "change_password": 900,  # 15Min
     }
 
     def __init__(
